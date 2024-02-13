@@ -88,10 +88,16 @@ SecByteBlock CryptoDriver::DH_generate_shared_key(
  */
 SecByteBlock CryptoDriver::AES_generate_key(const SecByteBlock &DH_shared_key)
 {
-    std::string aes_salt_str("salt0000");
-    SecByteBlock aes_salt((const unsigned char *) (aes_salt_str.data()),
-                          aes_salt_str.size());
+    const auto aesSalt = std::string{"salt0000"};
+
     // TODO: implement me!
+    auto aesKey = SecByteBlock{AES::DEFAULT_KEYLENGTH};
+
+    HKDF<SHA256>{}.DeriveKey(aesKey.data(), aesKey.size(),
+                             DH_shared_key.data(), DH_shared_key.size(),
+                             reinterpret_cast<const byte *>(aesSalt.data()), aesSalt.size(), nullptr, 0);
+
+    return aesKey;
 }
 
 /**
@@ -158,10 +164,9 @@ std::string CryptoDriver::AES_decrypt(SecByteBlock key, SecByteBlock iv,
 SecByteBlock
 CryptoDriver::HMAC_generate_key(const SecByteBlock &DH_shared_key)
 {
-    std::string hmac_salt_str("salt0001");
-    SecByteBlock hmac_salt((const unsigned char *) (hmac_salt_str.data()),
-                           hmac_salt_str.size());
+    const auto hmacSalt = std::string{"salt0001"};
     // TODO: implement me!
+
 }
 
 /**
