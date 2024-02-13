@@ -19,33 +19,39 @@
 
 class Client {
 public:
-  Client(std::shared_ptr<NetworkDriver> network_driver,
-         std::shared_ptr<CryptoDriver> crypto_driver);
-  void prepare_keys(CryptoPP::DH DH_obj,
-                    CryptoPP::SecByteBlock DH_private_value,
-                    CryptoPP::SecByteBlock DH_other_public_value);
-  Message_Message send(std::string plaintext);
-  std::pair<std::string, bool> receive(Message_Message ciphertext);
-  void run(std::string command);
-  void HandleKeyExchange(std::string command);
+    Client(std::shared_ptr<NetworkDriver> network_driver,
+           std::shared_ptr<CryptoDriver> crypto_driver);
+
+    void prepare_keys(CryptoPP::DH DH_obj,
+                      CryptoPP::SecByteBlock DH_private_value,
+                      CryptoPP::SecByteBlock DH_other_public_value);
+
+    Message_Message send(std::string plaintext);
+
+    std::pair<std::string, bool> receive(Message_Message ciphertext);
+
+    void run(std::string command);
+
+    void HandleKeyExchange(std::string command);
 
 private:
-  void ReceiveThread();
-  void SendThread();
+    void ReceiveThread();
 
-  std::mutex mtx;
+    void SendThread();
 
-  std::shared_ptr<CLIDriver> cli_driver;
-  std::shared_ptr<CryptoDriver> crypto_driver;
-  std::shared_ptr<NetworkDriver> network_driver;
+    std::mutex mtx;
 
-  SecByteBlock AES_key;
-  SecByteBlock HMAC_key;
+    std::shared_ptr<CLIDriver> cli_driver;
+    std::shared_ptr<CryptoDriver> crypto_driver;
+    std::shared_ptr<NetworkDriver> network_driver;
 
-  // DH Ratchet Fields
-  DHParams_Message DH_params;
-  bool DH_switched;
-  SecByteBlock DH_current_private_value;
-  SecByteBlock DH_current_public_value;
-  SecByteBlock DH_last_other_public_value;
+    SecByteBlock AES_key;
+    SecByteBlock HMAC_key;
+
+    // DH Ratchet Fields
+    DHParams_Message DH_params;
+    bool DH_switched;
+    SecByteBlock DH_current_private_value;
+    SecByteBlock DH_current_public_value;
+    SecByteBlock DH_last_other_public_value;
 };

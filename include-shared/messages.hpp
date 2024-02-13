@@ -14,12 +14,13 @@
 // ================================================
 
 namespace MessageType {
-enum T {
-  DHParams_Message = 0,
-  PublicValue = 1,
-  Message = 2,
-};
+    enum T {
+        DHParams_Message = 0,
+        PublicValue = 1,
+        Message = 2,
+    };
 }
+
 MessageType::T get_message_type(std::vector<unsigned char> &data);
 
 // ================================================
@@ -27,16 +28,19 @@ MessageType::T get_message_type(std::vector<unsigned char> &data);
 // ================================================
 
 struct Serializable {
-  virtual void serialize(std::vector<unsigned char> &data) = 0;
-  virtual int deserialize(std::vector<unsigned char> &data) = 0;
+    virtual void serialize(std::vector<unsigned char> &data) = 0;
+
+    virtual int deserialize(std::vector<unsigned char> &data) = 0;
 };
 
 // Serializers.
 int put_string(std::string s, std::vector<unsigned char> &data);
+
 int put_integer(CryptoPP::Integer i, std::vector<unsigned char> &data);
 
 // Deserializers.
 int get_string(std::string *s, std::vector<unsigned char> &data, int idx);
+
 int get_integer(CryptoPP::Integer *i, std::vector<unsigned char> &data,
                 int idx);
 
@@ -45,27 +49,30 @@ int get_integer(CryptoPP::Integer *i, std::vector<unsigned char> &data,
 // ================================================
 
 struct DHParams_Message : public Serializable {
-  CryptoPP::Integer p;
-  CryptoPP::Integer q;
-  CryptoPP::Integer g;
+    CryptoPP::Integer p;
+    CryptoPP::Integer q;
+    CryptoPP::Integer g;
 
-  void serialize(std::vector<unsigned char> &data);
-  int deserialize(std::vector<unsigned char> &data);
+    void serialize(std::vector<unsigned char> &data);
+
+    int deserialize(std::vector<unsigned char> &data);
 };
 
 struct PublicValue_Message : public Serializable {
-  CryptoPP::SecByteBlock public_value;
+    CryptoPP::SecByteBlock public_value;
 
-  void serialize(std::vector<unsigned char> &data);
-  int deserialize(std::vector<unsigned char> &data);
+    void serialize(std::vector<unsigned char> &data);
+
+    int deserialize(std::vector<unsigned char> &data);
 };
 
 struct Message_Message : public Serializable {
-  CryptoPP::SecByteBlock iv;
-  CryptoPP::SecByteBlock public_value;
-  std::string ciphertext;
-  std::string mac;
+    CryptoPP::SecByteBlock iv;
+    CryptoPP::SecByteBlock public_value;
+    std::string ciphertext;
+    std::string mac;
 
-  void serialize(std::vector<unsigned char> &data);
-  int deserialize(std::vector<unsigned char> &data);
+    void serialize(std::vector<unsigned char> &data);
+
+    int deserialize(std::vector<unsigned char> &data);
 };

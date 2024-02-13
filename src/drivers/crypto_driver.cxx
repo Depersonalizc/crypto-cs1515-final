@@ -5,6 +5,8 @@
 
 using namespace CryptoPP;
 
+static auto rngp = AutoSeededRandomPool{};
+
 /**
  * @brief Returns (p, q, g) DH parameters. This function should:
  * 1) Initialize a `CryptoPP::AutoSeededRandomPool` object
@@ -15,8 +17,20 @@ using namespace CryptoPP;
  * 3) Store and return the parameters in a `DHParams_Message` object.
  * @return `DHParams_Message` object that stores Diffie-Hellman parameters
  */
-DHParams_Message CryptoDriver::DH_generate_params() {
-  // TODO: implement me!
+DHParams_Message CryptoDriver::DH_generate_params()
+{
+    // TO.DO: implement me!
+    using namespace CryptoPP;
+
+//    auto rngp = AutoSeededRandomPool{};
+    const auto primeGen = PrimeAndGenerator{1, rngp, 512, 511};
+
+    auto params = DHParams_Message{};
+    params.p = primeGen.Prime();
+    params.q = primeGen.SubPrime();
+    params.g = primeGen.Generator();
+
+    return params;
 }
 
 /**
@@ -28,8 +42,16 @@ DHParams_Message CryptoDriver::DH_generate_params() {
  * @return Tuple containing DH object, private value, public value.
  */
 std::tuple<DH, SecByteBlock, SecByteBlock>
-CryptoDriver::DH_initialize(const DHParams_Message &DH_params) {
-  // TODO: implement me!
+CryptoDriver::DH_initialize(const DHParams_Message &DH_params)
+{
+    // TO.DO: implement me!
+    auto dh = DH{};
+    auto sk = SecByteBlock{dh.PrivateKeyLength()};
+    auto pk = SecByteBlock{dh.PublicKeyLength()};
+
+    dh.GenerateKeyPair(rngp, sk.data(), pk.data());
+
+    return {std::move(dh), std::move(sk), std::move(pk)};
 }
 
 /**
@@ -43,9 +65,10 @@ CryptoDriver::DH_initialize(const DHParams_Message &DH_params) {
  * @return Diffie-Hellman shared key
  */
 SecByteBlock CryptoDriver::DH_generate_shared_key(
-    const DH &DH_obj, const SecByteBlock &DH_private_value,
-    const SecByteBlock &DH_other_public_value) {
-  // TODO: implement me!
+        const DH &DH_obj, const SecByteBlock &DH_private_value,
+        const SecByteBlock &DH_other_public_value)
+{
+    // TODO: implement me!
 }
 
 /**
@@ -58,11 +81,12 @@ SecByteBlock CryptoDriver::DH_generate_shared_key(
  * @param DH_shared_key Diffie-Hellman shared key
  * @return AES key
  */
-SecByteBlock CryptoDriver::AES_generate_key(const SecByteBlock &DH_shared_key) {
-  std::string aes_salt_str("salt0000");
-  SecByteBlock aes_salt((const unsigned char *)(aes_salt_str.data()),
-                        aes_salt_str.size());
-  // TODO: implement me!
+SecByteBlock CryptoDriver::AES_generate_key(const SecByteBlock &DH_shared_key)
+{
+    std::string aes_salt_str("salt0000");
+    SecByteBlock aes_salt((const unsigned char *) (aes_salt_str.data()),
+                          aes_salt_str.size());
+    // TODO: implement me!
 }
 
 /**
@@ -79,15 +103,16 @@ SecByteBlock CryptoDriver::AES_generate_key(const SecByteBlock &DH_shared_key) {
  * @return Pair of ciphertext and iv
  */
 std::pair<std::string, SecByteBlock>
-CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext) {
-  try {
-    // TODO: implement me!
-  } catch (CryptoPP::Exception &e) {
-    std::cerr << e.what() << std::endl;
-    std::cerr << "This function was likely called with an incorrect shared key."
-              << std::endl;
-    throw std::runtime_error("CryptoDriver AES encryption failed.");
-  }
+CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
+{
+    try {
+        // TODO: implement me!
+    } catch (CryptoPP::Exception &e) {
+        std::cerr << e.what() << std::endl;
+        std::cerr << "This function was likely called with an incorrect shared key."
+                  << std::endl;
+        throw std::runtime_error("CryptoDriver AES encryption failed.");
+    }
 }
 
 /**
@@ -104,15 +129,16 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext) {
  * @return decrypted message
  */
 std::string CryptoDriver::AES_decrypt(SecByteBlock key, SecByteBlock iv,
-                                      std::string ciphertext) {
-  try {
-    // TODO: implement me!
-  } catch (CryptoPP::Exception &e) {
-    std::cerr << e.what() << std::endl;
-    std::cerr << "This function was likely called with an incorrect shared key."
-              << std::endl;
-    throw std::runtime_error("CryptoDriver AES decryption failed.");
-  }
+                                      std::string ciphertext)
+{
+    try {
+        // TODO: implement me!
+    } catch (CryptoPP::Exception &e) {
+        std::cerr << e.what() << std::endl;
+        std::cerr << "This function was likely called with an incorrect shared key."
+                  << std::endl;
+        throw std::runtime_error("CryptoDriver AES decryption failed.");
+    }
 }
 
 /**
@@ -125,11 +151,12 @@ std::string CryptoDriver::AES_decrypt(SecByteBlock key, SecByteBlock iv,
  * @return HMAC key
  */
 SecByteBlock
-CryptoDriver::HMAC_generate_key(const SecByteBlock &DH_shared_key) {
-  std::string hmac_salt_str("salt0001");
-  SecByteBlock hmac_salt((const unsigned char *)(hmac_salt_str.data()),
-                         hmac_salt_str.size());
-  // TODO: implement me!
+CryptoDriver::HMAC_generate_key(const SecByteBlock &DH_shared_key)
+{
+    std::string hmac_salt_str("salt0001");
+    SecByteBlock hmac_salt((const unsigned char *) (hmac_salt_str.data()),
+                           hmac_salt_str.size());
+    // TODO: implement me!
 }
 
 /**
@@ -142,13 +169,14 @@ CryptoDriver::HMAC_generate_key(const SecByteBlock &DH_shared_key) {
  * @return HMAC (Hashed Message Authentication Code)
  */
 std::string CryptoDriver::HMAC_generate(SecByteBlock key,
-                                        std::string ciphertext) {
-  try {
-    // TODO: implement me!
-  } catch (const CryptoPP::Exception &e) {
-    std::cerr << e.what() << std::endl;
-    throw std::runtime_error("CryptoDriver HMAC generation failed.");
-  }
+                                        std::string ciphertext)
+{
+    try {
+        // TODO: implement me!
+    } catch (const CryptoPP::Exception &e) {
+        std::cerr << e.what() << std::endl;
+        throw std::runtime_error("CryptoDriver HMAC generation failed.");
+    }
 }
 
 /**
@@ -162,8 +190,9 @@ std::string CryptoDriver::HMAC_generate(SecByteBlock key,
  * @return true if MAC is valid, else false
  */
 bool CryptoDriver::HMAC_verify(SecByteBlock key, std::string ciphertext,
-                               std::string mac) {
-  const int flags = HashVerificationFilter::THROW_EXCEPTION |
-                    HashVerificationFilter::HASH_AT_END;
-  // TODO: implement me!
+                               std::string mac)
+{
+    const int flags = HashVerificationFilter::THROW_EXCEPTION |
+                      HashVerificationFilter::HASH_AT_END;
+    // TODO: implement me!
 }

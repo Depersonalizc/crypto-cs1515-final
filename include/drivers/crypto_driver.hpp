@@ -26,20 +26,26 @@ using namespace CryptoPP;
 
 class CryptoDriver {
 public:
-  DHParams_Message DH_generate_params();
-  std::tuple<DH, SecByteBlock, SecByteBlock>
-  DH_initialize(const DHParams_Message &DH_params);
-  SecByteBlock
-  DH_generate_shared_key(const DH &DH_obj, const SecByteBlock &DH_private_value,
-                         const SecByteBlock &DH_other_public_value);
+    DHParams_Message DH_generate_params();
 
-  SecByteBlock AES_generate_key(const SecByteBlock &DH_shared_key);
-  std::pair<std::string, SecByteBlock> AES_encrypt(SecByteBlock key,
-                                                   std::string plaintext);
-  std::string AES_decrypt(SecByteBlock key, SecByteBlock iv,
-                          std::string ciphertext);
+    std::tuple<DH, SecByteBlock, SecByteBlock>
+    DH_initialize(const DHParams_Message &DH_params);
 
-  SecByteBlock HMAC_generate_key(const SecByteBlock &DH_shared_key);
-  std::string HMAC_generate(SecByteBlock key, std::string ciphertext);
-  bool HMAC_verify(SecByteBlock key, std::string ciphertext, std::string hmac);
+    SecByteBlock
+    DH_generate_shared_key(const DH &DH_obj, const SecByteBlock &DH_private_value,
+                           const SecByteBlock &DH_other_public_value);
+
+    SecByteBlock AES_generate_key(const SecByteBlock &DH_shared_key);
+
+    std::pair<std::string, SecByteBlock> AES_encrypt(SecByteBlock key,
+                                                     std::string plaintext);
+
+    std::string AES_decrypt(SecByteBlock key, SecByteBlock iv,
+                            std::string ciphertext);
+
+    SecByteBlock HMAC_generate_key(const SecByteBlock &DH_shared_key);
+
+    std::string HMAC_generate(SecByteBlock key, std::string ciphertext);
+
+    bool HMAC_verify(SecByteBlock key, std::string ciphertext, std::string hmac);
 };
