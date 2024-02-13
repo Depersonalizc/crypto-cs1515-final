@@ -49,7 +49,7 @@ CryptoDriver::DH_initialize(const DHParams_Message &DH_params)
     auto sk = SecByteBlock{dh.PrivateKeyLength()};
     auto pk = SecByteBlock{dh.PublicKeyLength()};
 
-    dh.GenerateKeyPair(rngp, sk.data(), pk.data());
+    dh.GenerateKeyPair(rngp, sk, pk);
 
     return {std::move(dh), std::move(sk), std::move(pk)};
 }
@@ -68,7 +68,12 @@ SecByteBlock CryptoDriver::DH_generate_shared_key(
         const DH &DH_obj, const SecByteBlock &DH_private_value,
         const SecByteBlock &DH_other_public_value)
 {
-    // TODO: implement me!
+    // TO.DO: implement me!
+    auto shared = SecByteBlock{DH_obj.AgreedValueLength()};
+    if (!DH_obj.Agree(shared, DH_private_value, DH_other_public_value)) {
+        throw std::runtime_error{"Failed to agree on other party's public key"};
+    }
+    return shared;
 }
 
 /**
