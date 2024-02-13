@@ -45,7 +45,7 @@ std::tuple<DH, SecByteBlock, SecByteBlock>
 CryptoDriver::DH_initialize(const DHParams_Message &DH_params)
 {
     // TO.DO: implement me!
-    auto dh = DH{};
+    auto dh = DH{DH_params.p, DH_params.q, DH_params.g};
     auto sk = SecByteBlock{dh.PrivateKeyLength()};
     auto pk = SecByteBlock{dh.PublicKeyLength()};
 
