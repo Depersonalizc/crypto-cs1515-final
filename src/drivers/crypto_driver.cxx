@@ -124,8 +124,8 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
 
         // Set key with IV
         auto iv = SecByteBlock{AES::BLOCKSIZE};
-        enc.GetNextIV(rngp, iv);
-        enc.SetKeyWithIV(key, key.size(), iv, iv.size());
+//        enc.GetNextIV(rngp, iv);
+//        enc.SetKeyWithIV(key, key.size(), iv, iv.size());
 
         // Encode
         std::string ciphertext;
