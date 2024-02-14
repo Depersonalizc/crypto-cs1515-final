@@ -22,7 +22,6 @@ DHParams_Message CryptoDriver::DH_generate_params()
     // TO.DO: implement me!
     using namespace CryptoPP;
 
-//    auto rngp = AutoSeededRandomPool{};
     const auto primeGen = PrimeAndGenerator{1, rngp, 512, 511};
 
     auto params = DHParams_Message{};
@@ -130,9 +129,9 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
 //        // Encode
 //        std::string ciphertext;
 //        StringSource ss{plaintext, true,
-//                        new StreamTransformationFilter{enc,
-//                                                       new StringSink{ciphertext}
-//                        } // StreamTransformationFilter
+//            new StreamTransformationFilter{enc,
+//                new StringSink{ciphertext}
+//            } // StreamTransformationFilter
 //        }; // StringSource
 //
 //        return {std::move(ciphertext), std::move(iv)};
@@ -172,9 +171,9 @@ std::string CryptoDriver::AES_decrypt(SecByteBlock key, SecByteBlock iv,
 //
 //        std::string plaintext;
 //        StringSource ss{ciphertext, true,
-//                        new StreamTransformationFilter{dec,
-//                                                       new StringSink{plaintext}
-//                        } // StreamTransformationFilter
+//            new StreamTransformationFilter{dec,
+//                new StringSink{plaintext}
+//            } // StreamTransformationFilter
 //        }; // StringSource
 //
 //        return plaintext;
@@ -204,6 +203,13 @@ CryptoDriver::HMAC_generate_key(const SecByteBlock &DH_shared_key)
     const auto hmacSalt = std::string{"salt0001"};
     // TODO: implement me!
 
+    auto hmacKey = SecByteBlock{AES::DEFAULT_KEYLENGTH};
+
+    HKDF<SHA256>{}.DeriveKey(hmacKey, hmacKey.size(),
+                             DH_shared_key, DH_shared_key.size(),
+                             reinterpret_cast<const byte *>(hmacSalt.data()), hmacSalt.size(), nullptr, 0);
+
+    return hmacKey;
 }
 
 /**
@@ -218,8 +224,13 @@ CryptoDriver::HMAC_generate_key(const SecByteBlock &DH_shared_key)
 std::string CryptoDriver::HMAC_generate(SecByteBlock key,
                                         std::string ciphertext)
 {
+    throw std::runtime_error{"CryptoDriver::HMAC_generate: NOT YET IMPLEMENTED"};
+
     try {
         // TODO: implement me!
+        HMAC<SHA256> hmac;
+        hmac.SetKey(key, key.size());
+
     } catch (const CryptoPP::Exception &e) {
         std::cerr << e.what() << std::endl;
         throw std::runtime_error("CryptoDriver HMAC generation failed.");
@@ -242,4 +253,6 @@ bool CryptoDriver::HMAC_verify(SecByteBlock key, std::string ciphertext,
     const int flags = HashVerificationFilter::THROW_EXCEPTION |
                       HashVerificationFilter::HASH_AT_END;
     // TODO: implement me!
+    throw std::runtime_error{"CryptoDriver::HMAC_verify: NOT YET IMPLEMENTED"};
+
 }

@@ -58,6 +58,8 @@ Message_Message Client::send(std::string plaintext)
     std::lock_guard<std::mutex> lck{mtx};
 
     // TODO: implement me!
+    throw std::runtime_error{"Client::send: NOT YET IMPLEMENTED"};
+
 //    if (DH_switched) {
 //        DH_switched = false;
 //        prepare_keys()
@@ -77,6 +79,8 @@ std::pair<std::string, bool> Client::receive(Message_Message msg)
     std::lock_guard<std::mutex> lck{mtx};
 
     // TODO: implement me!
+    throw std::runtime_error{"Client::receive: NOT YET IMPLEMENTED"};
+
 }
 
 /**
@@ -111,6 +115,7 @@ void Client::run(std::string command)
 void Client::HandleKeyExchange(std::string command)
 {
     // TODO: implement me!
+    throw std::runtime_error{"Client::HandleKeyExchange: NOT YET IMPLEMENTED"};
 }
 
 /**
@@ -139,7 +144,7 @@ void Client::ReceiveThread()
                                    "message may have been tampered with.");
             throw std::runtime_error("Received invalid MAC!");
         }
-        cli_driver->print_left(std::get<0>(decrypted_data));
+        cli_driver->print_left(decrypted_data.first);
     }
 }
 
