@@ -139,7 +139,7 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
 
         }
 
-        return {std::move(ciphertext), iv};
+        return {ciphertext, iv};
 
     } catch (CryptoPP::Exception &e) {
         std::cerr << e.what() << std::endl;
