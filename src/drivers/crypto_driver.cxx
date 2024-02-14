@@ -117,21 +117,32 @@ std::pair<std::string, SecByteBlock>
 CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
 {
     try {
+        using namespace CryptoPP;
+
         // TODO: implement me!
         CBC_Mode<AES>::Encryption enc;
+
+        std::cout << "flag 1\n";
 
         // Set key with IV
         auto iv = SecByteBlock{AES::BLOCKSIZE};
         enc.GetNextIV(rngp, iv);
         enc.SetKeyWithIV(key, key.size(), iv, iv.size());
 
+        std::cout << "flag 2\n";
+
         // Encode
         std::string ciphertext;
-        CryptoPP::StringSource ss{plaintext, true,
-            new CryptoPP::StreamTransformationFilter{enc,
-                new CryptoPP::StringSink{ciphertext}
-            } // StreamTransformationFilter
-        }; // StringSource
+
+        {
+            StringSource ss{plaintext, true,
+                            new StreamTransformationFilter{enc,
+                                                           new StringSink{ciphertext}
+                } // StreamTransformationFilter
+            }; // StringSource
+
+        }
+        std::cout << "flag 3\n";
 
         return {std::move(ciphertext), std::move(iv)};
 
