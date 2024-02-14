@@ -90,11 +90,11 @@ SecByteBlock CryptoDriver::AES_generate_key(const SecByteBlock &DH_shared_key)
 {
     const auto aesSalt = std::string{"salt0000"};
 
-    // TODO: implement me!
+    // TO.DO: implement me!
     auto aesKey = SecByteBlock{AES::DEFAULT_KEYLENGTH};
 
-    HKDF<SHA256>{}.DeriveKey(aesKey.data(), aesKey.size(),
-                             DH_shared_key.data(), DH_shared_key.size(),
+    HKDF<SHA256>{}.DeriveKey(aesKey, aesKey.size(),
+                             DH_shared_key, DH_shared_key.size(),
                              reinterpret_cast<const byte *>(aesSalt.data()), aesSalt.size(), nullptr, 0);
 
     return aesKey;
@@ -118,6 +118,23 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
 {
     try {
         // TODO: implement me!
+        CBC_Mode<AES>::Encryption enc;
+
+        // Set key with IV
+        auto iv = SecByteBlock{AES::BLOCKSIZE};
+        enc.GetNextIV(rngp, iv);
+        enc.SetKeyWithIV(key, key.size(), iv, iv.size());
+
+        // Encode
+        std::string ciphertext;
+        CryptoPP::StringSource ss{plaintext, true,
+            new CryptoPP::StreamTransformationFilter{enc,
+                new CryptoPP::StringSink{ciphertext}
+            } // StreamTransformationFilter
+        }; // StringSource
+
+        return {std::move(ciphertext), std::move(iv)};
+
     } catch (CryptoPP::Exception &e) {
         std::cerr << e.what() << std::endl;
         std::cerr << "This function was likely called with an incorrect shared key."
