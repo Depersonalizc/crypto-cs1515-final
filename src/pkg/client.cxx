@@ -117,6 +117,48 @@ void Client::HandleKeyExchange(std::string command)
     // TODO: implement me!
 //    throw std::runtime_error{"Client::HandleKeyExchange: NOT YET IMPLEMENTED"};
 
+    using data_t = std::vector<unsigned char>;
+
+    if (command == "listen") {
+        // Read params
+        data_t seParams = network_driver->read();
+
+        // Deserialize
+        DH_params.deserialize(seParams);
+
+    } else if (command == "connect") {
+        // Generate params
+        DH_params = crypto_driver->DH_generate_params();
+
+        // Serialize and send
+        data_t seParams;
+        DH_params.serialize(seParams);
+        network_driver->send(seParams);
+
+    } else {
+        // throw ...
+    }
+
+    // 2) Initialize DH object and keys
+    const auto &[dh, sk, pk] = crypto_driver->DH_initialize(DH_params);
+    DH_current_private_value = sk;
+    DH_current_public_value = pk;
+
+    // 3) Send my public value (pk)
+    data_t seMyPublic(pk.size());
+    std::copy_n(pk.data(), pk.size(), seMyPublic.begin());
+    network_driver->send(seMyPublic);
+
+    // 4) Listen for the other party's public value
+    const data_t seOtherPublic = network_driver->read();
+    DH_last_other_public_value = {seOtherPublic.data(), seOtherPublic.size()};
+
+    // 5) Generate AES & HMAC keys
+    const auto dhShared =
+            crypto_driver->DH_generate_shared_key(dh, sk, DH_last_other_public_value);
+
+    AES_key = crypto_driver->AES_generate_key(dhShared);
+    HMAC_key = crypto_driver->HMAC_generate_key(dhShared);
 }
 
 /**
