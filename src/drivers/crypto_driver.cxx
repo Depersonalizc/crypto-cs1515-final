@@ -120,7 +120,7 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
         using namespace CryptoPP;
 
         // TODO: implement me!
-        CBC_Mode<AES>::Encryption enc;
+//        CBC_Mode<AES>::Encryption enc;
 
         // Set key with IV
         auto iv = SecByteBlock{AES::BLOCKSIZE};
@@ -139,7 +139,7 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
 //
 //        }
 
-        return {ciphertext, iv};
+        return {ciphertext, std::move(iv)};
 
     } catch (CryptoPP::Exception &e) {
         std::cerr << e.what() << std::endl;
