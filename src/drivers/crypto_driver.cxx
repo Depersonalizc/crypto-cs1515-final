@@ -129,19 +129,15 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
 
         // Encode
         std::string ciphertext;
+        StringSource ss{plaintext, true,
+                        new StreamTransformationFilter{enc,
+                                                       new StringSink{ciphertext}
+                        } // StreamTransformationFilter
+        }; // StringSource
 
-        {
-            StringSource ss{plaintext, true,
-                            new StreamTransformationFilter{enc,
-                                                           new StringSink{ciphertext}
-                } // StreamTransformationFilter
-            }; // StringSource
+        return {std::move(ciphertext), std::move(iv)};
 
-        }
-
-        return {std::move(ciphertext), iv};
-
-    } catch (CryptoPP::Exception &e) {
+    } catch (const CryptoPP::Exception &e) {
         std::cerr << e.what() << std::endl;
         std::cerr << "This function was likely called with an incorrect shared key."
                   << std::endl;
@@ -167,7 +163,19 @@ std::string CryptoDriver::AES_decrypt(SecByteBlock key, SecByteBlock iv,
 {
     try {
         // TODO: implement me!
-    } catch (CryptoPP::Exception &e) {
+        auto dec = CBC_Mode<AES>::Decryption{};
+        dec.SetKeyWithIV(key, key.size(), iv, iv.size());
+
+        std::string plaintext;
+        StringSource ss{ciphertext, true,
+                        new StreamTransformationFilter{dec,
+                                                       new StringSink{plaintext}
+                        } // StreamTransformationFilter
+        }; // StringSource
+
+        return plaintext;
+
+    } catch (const CryptoPP::Exception &e) {
         std::cerr << e.what() << std::endl;
         std::cerr << "This function was likely called with an incorrect shared key."
                   << std::endl;
