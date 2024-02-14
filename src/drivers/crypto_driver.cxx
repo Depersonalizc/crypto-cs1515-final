@@ -130,14 +130,14 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
         // Encode
         std::string ciphertext;
 
-        {
-            StringSource ss{plaintext, true,
-                            new StreamTransformationFilter{enc,
-                                                           new StringSink{ciphertext}
-                } // StreamTransformationFilter
-            }; // StringSource
-
-        }
+//        {
+//            StringSource ss{plaintext, true,
+//                            new StreamTransformationFilter{enc,
+//                                                           new StringSink{ciphertext}
+//                } // StreamTransformationFilter
+//            }; // StringSource
+//
+//        }
 
         return {ciphertext, iv};
 
