@@ -123,24 +123,21 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
 //        CBC_Mode<AES>::Encryption enc;
 
         // Set key with IV
-//        auto iv = SecByteBlock{AES::BLOCKSIZE};
-        auto iv = SecByteBlock{100};
+        auto iv = SecByteBlock{AES::BLOCKSIZE};
 //        enc.GetNextIV(rngp, iv);
 //        enc.SetKeyWithIV(key, key.size(), iv, iv.size());
 
         // Encode
-        std::string ciphertext{"xxxcipherxxx"};
+//        std::string ciphertext;
 
-//        {
-//            StringSource ss{plaintext, true,
-//                            new StreamTransformationFilter{enc,
-//                                                           new StringSink{ciphertext}
-//                } // StreamTransformationFilter
-//            }; // StringSource
-//
-//        }
+//        StringSource ss{plaintext, true,
+//                        new StreamTransformationFilter{enc,
+//                                                       new StringSink{ciphertext}
+//                        } // StreamTransformationFilter
+//        }; // StringSource
 
-        return {ciphertext, std::move(iv)};
+//        return {std::move(ciphertext), std::move(iv)};
+        return {{}, std::move(iv)};
 
     } catch (CryptoPP::Exception &e) {
         std::cerr << e.what() << std::endl;
