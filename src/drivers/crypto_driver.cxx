@@ -122,14 +122,14 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
         // TODO: implement me!
         CBC_Mode<AES>::Encryption enc;
 
-        std::cout << "flag 1\n";
+        std::cerr << "flag 1\n";
 
         // Set key with IV
         auto iv = SecByteBlock{AES::BLOCKSIZE};
         enc.GetNextIV(rngp, iv);
         enc.SetKeyWithIV(key, key.size(), iv, iv.size());
 
-        std::cout << "flag 2\n";
+        std::cerr << "flag 2\n";
 
         // Encode
         std::string ciphertext;
@@ -142,7 +142,7 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
             }; // StringSource
 
         }
-        std::cout << "flag 3\n";
+        std::cerr << "flag 3\n";
 
         return {std::move(ciphertext), std::move(iv)};
 
