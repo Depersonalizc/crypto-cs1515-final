@@ -123,12 +123,13 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
 //        CBC_Mode<AES>::Encryption enc;
 
         // Set key with IV
-        auto iv = SecByteBlock{AES::BLOCKSIZE};
+//        auto iv = SecByteBlock{AES::BLOCKSIZE};
+        auto iv = SecByteBlock{100};
 //        enc.GetNextIV(rngp, iv);
 //        enc.SetKeyWithIV(key, key.size(), iv, iv.size());
 
         // Encode
-        std::string ciphertext;
+        std::string ciphertext{"xxxcipherxxx"};
 
 //        {
 //            StringSource ss{plaintext, true,

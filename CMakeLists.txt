@@ -78,6 +78,9 @@ if ( "$ENV{CS1515_TA_MODE}" STREQUAL "on" )
   )
 endif()
 
+# Add sanitizer flags for C++ compiler for "Debug" configuration
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address,undefined")
+
 # add tests
 add_subdirectory(test)
 add_custom_target(check ./test.sh)
