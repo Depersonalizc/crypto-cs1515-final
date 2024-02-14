@@ -115,7 +115,8 @@ void Client::run(std::string command)
 void Client::HandleKeyExchange(std::string command)
 {
     // TODO: implement me!
-    throw std::runtime_error{"Client::HandleKeyExchange: NOT YET IMPLEMENTED"};
+//    throw std::runtime_error{"Client::HandleKeyExchange: NOT YET IMPLEMENTED"};
+
 }
 
 /**

@@ -118,25 +118,23 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
     try {
         using namespace CryptoPP;
 
-//        // TODO: implement me!
-//        CBC_Mode<AES>::Encryption enc;
-//
-//        // Set key with IV
-//        auto iv = SecByteBlock{AES::BLOCKSIZE};
-//        enc.GetNextIV(rngp, iv);
-//        enc.SetKeyWithIV(key, key.size(), iv, iv.size());
-//
-//        // Encode
-//        std::string ciphertext;
-//        StringSource ss{plaintext, true,
-//            new StreamTransformationFilter{enc,
-//                new StringSink{ciphertext}
-//            } // StreamTransformationFilter
-//        }; // StringSource
-//
-//        return {std::move(ciphertext), std::move(iv)};
+        // TODO: implement me!
+        CBC_Mode<AES>::Encryption enc;
 
-        return {{}, SecByteBlock{AES::BLOCKSIZE}};
+        // Set key with IV
+        auto iv = SecByteBlock{AES::BLOCKSIZE};
+        enc.GetNextIV(rngp, iv);
+        enc.SetKeyWithIV(key, key.size(), iv, iv.size());
+
+        // Encode
+        std::string ciphertext;
+        StringSource ss{plaintext, true,
+            new StreamTransformationFilter{enc,
+                new StringSink{ciphertext}
+            } // StreamTransformationFilter
+        }; // StringSource
+
+        return {std::move(ciphertext), std::move(iv)};
 
     } catch (const CryptoPP::Exception &e) {
         std::cerr << e.what() << std::endl;
@@ -165,20 +163,18 @@ std::string CryptoDriver::AES_decrypt(SecByteBlock key, SecByteBlock iv,
     try {
         using namespace CryptoPP;
 
-//        // TODO: implement me!
-//        CBC_Mode<AES>::Decryption dec;
-//        dec.SetKeyWithIV(key, key.size(), iv, iv.size());
-//
-//        std::string plaintext;
-//        StringSource ss{ciphertext, true,
-//            new StreamTransformationFilter{dec,
-//                new StringSink{plaintext}
-//            } // StreamTransformationFilter
-//        }; // StringSource
-//
-//        return plaintext;
+        // TODO: implement me!
+        CBC_Mode<AES>::Decryption dec;
+        dec.SetKeyWithIV(key, key.size(), iv, iv.size());
 
-        return {};
+        std::string plaintext;
+        StringSource ss{ciphertext, true,
+            new StreamTransformationFilter{dec,
+                new StringSink{plaintext}
+            } // StreamTransformationFilter
+        }; // StringSource
+
+        return plaintext;
 
     } catch (const CryptoPP::Exception &e) {
         std::cerr << e.what() << std::endl;
