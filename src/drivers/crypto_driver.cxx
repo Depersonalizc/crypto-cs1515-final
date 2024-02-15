@@ -129,9 +129,9 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
         // Encode
         std::string ciphertext;
         StringSource ss{plaintext, true,
-            new StreamTransformationFilter{enc,
-                new StringSink{ciphertext}
-            } // StreamTransformationFilter
+                        new StreamTransformationFilter{enc,
+                                                       new StringSink{ciphertext}
+                        } // StreamTransformationFilter
         }; // StringSource
 
         return {std::move(ciphertext), std::move(iv)};
@@ -169,9 +169,9 @@ std::string CryptoDriver::AES_decrypt(SecByteBlock key, SecByteBlock iv,
 
         std::string plaintext;
         StringSource ss{ciphertext, true,
-            new StreamTransformationFilter{dec,
-                new StringSink{plaintext}
-            } // StreamTransformationFilter
+                        new StreamTransformationFilter{dec,
+                                                       new StringSink{plaintext}
+                        } // StreamTransformationFilter
         }; // StringSource
 
         return plaintext;
@@ -220,12 +220,21 @@ CryptoDriver::HMAC_generate_key(const SecByteBlock &DH_shared_key)
 std::string CryptoDriver::HMAC_generate(SecByteBlock key,
                                         std::string ciphertext)
 {
-    throw std::runtime_error{"CryptoDriver::HMAC_generate: NOT YET IMPLEMENTED"};
+//    throw std::runtime_error{"CryptoDriver::HMAC_generate: NOT YET IMPLEMENTED"};
 
     try {
         // TODO: implement me!
         HMAC<SHA256> hmac;
         hmac.SetKey(key, key.size());
+
+        std::string hash;
+        StringSource ss{ciphertext, true,
+                        new HashFilter{hmac,
+                                       new StringSink{hash}
+                        } // StreamTransformationFilter
+        }; // StringSource
+
+        return hash;
 
     } catch (const CryptoPP::Exception &e) {
         std::cerr << e.what() << std::endl;

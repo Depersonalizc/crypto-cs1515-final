@@ -144,7 +144,6 @@ void Client::HandleKeyExchange(std::string command)
     DH_current_private_value = sk;
     DH_current_public_value = pk;
 
-
     // 3) Send my public value (pk)
     PublicValue_Message myPublic;
     myPublic.public_value = pk;
