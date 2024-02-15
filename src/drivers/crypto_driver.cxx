@@ -134,8 +134,8 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
             } // StreamTransformationFilter
         }; // StringSource
 
-        std::cerr << "[INFO] Ciphertext length: " << ciphertext.size() << '\n';
-        std::cerr << "[INFO] IV length: " << iv.size() << '\n';
+        std::cerr << "[INFO] Ciphertext length: " << ciphertext.size() << std::endl;
+        std::cerr << "[INFO] IV length: " << iv.size() << std::endl;
         return {std::move(ciphertext), std::move(iv)};
 
     } catch (const CryptoPP::Exception &e) {
@@ -223,7 +223,7 @@ std::string CryptoDriver::HMAC_generate(SecByteBlock key,
                                         std::string ciphertext)
 {
 //    throw std::runtime_error{"CryptoDriver::HMAC_generate: NOT YET IMPLEMENTED"};
-    std::cerr << "[INFO] HMAC_generate::ciphertext length: " << ciphertext.size() << '\n';
+    std::cerr << "[INFO] HMAC_generate::ciphertext length: " << ciphertext.size() << std::endl;
 
     try {
         // TODO: implement me!
@@ -257,7 +257,7 @@ bool CryptoDriver::HMAC_verify(SecByteBlock key, std::string ciphertext,
 {
 //    static constexpr auto flags =
 //            HashVerificationFilter::PUT_RESULT | HashVerificationFilter::HASH_AT_END;
-    std::cerr << "[INFO] HMAC_verify::ciphertext length: " << ciphertext.size() << '\n';
+    std::cerr << "[INFO] HMAC_verify::ciphertext length: " << ciphertext.size() << std::endl;
 
     // TODO: implement me!
 //    throw std::runtime_error{"CryptoDriver::HMAC_verify: NOT YET IMPLEMENTED"};
