@@ -224,17 +224,17 @@ std::string CryptoDriver::HMAC_generate(SecByteBlock key,
 
     try {
         // TODO: implement me!
-        HMAC<SHA256> hmac;
-        hmac.SetKey(key, key.size());
+        HMAC<SHA256> hasher;
+        hasher.SetKey(key, key.size());
 
-        std::string hash;
+        std::string hmac;
         StringSource ss{ciphertext, true,
-                        new HashFilter{hmac,
-                                       new StringSink{hash}
+                        new HashFilter{hasher,
+                                       new StringSink{hmac}
                         } // StreamTransformationFilter
         }; // StringSource
 
-        return hash;
+        return hmac;
 
     } catch (const CryptoPP::Exception &e) {
         std::cerr << e.what() << std::endl;
@@ -255,18 +255,18 @@ std::string CryptoDriver::HMAC_generate(SecByteBlock key,
 bool CryptoDriver::HMAC_verify(SecByteBlock key, std::string ciphertext,
                                std::string mac)
 {
-    const int flags = HashVerificationFilter::PUT_RESULT |
-                      HashVerificationFilter::HASH_AT_END;
+    const auto flags = HashVerificationFilter::PUT_RESULT |
+                       HashVerificationFilter::HASH_AT_END;
     // TODO: implement me!
 //    throw std::runtime_error{"CryptoDriver::HMAC_verify: NOT YET IMPLEMENTED"};
 
-    HMAC<SHA256> hmac;
-    hmac.SetKey(key, key.size());
+    HMAC<SHA256> hasher;
+    hasher.SetKey(key, key.size());
 
     bool ok;
-    StringSource ss(ciphertext, true,
-                    new HashVerificationFilter(hmac,
-                                               new ArraySink((byte *) &ok, sizeof(ok)),
+    StringSource ss(ciphertext + mac, true,
+                    new HashVerificationFilter(hasher,
+                                               new ArraySink(reinterpret_cast<byte *>(&ok), sizeof(ok)),
                                                flags
                     ) // HashVerificationFilter
     ); // StringSource
