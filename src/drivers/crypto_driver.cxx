@@ -255,9 +255,21 @@ std::string CryptoDriver::HMAC_generate(SecByteBlock key,
 bool CryptoDriver::HMAC_verify(SecByteBlock key, std::string ciphertext,
                                std::string mac)
 {
-    const int flags = HashVerificationFilter::THROW_EXCEPTION |
+    const int flags = HashVerificationFilter::PUT_RESULT |
                       HashVerificationFilter::HASH_AT_END;
     // TODO: implement me!
-    throw std::runtime_error{"CryptoDriver::HMAC_verify: NOT YET IMPLEMENTED"};
+//    throw std::runtime_error{"CryptoDriver::HMAC_verify: NOT YET IMPLEMENTED"};
 
+    HMAC<SHA256> hmac;
+    hmac.SetKey(key, key.size());
+
+    bool ok;
+    StringSource ss(ciphertext, true,
+                    new HashVerificationFilter(hmac,
+                                               new ArraySink((byte *) &ok, sizeof(ok)),
+                                               flags
+                    ) // HashVerificationFilter
+    ); // StringSource
+
+    return ok;
 }
