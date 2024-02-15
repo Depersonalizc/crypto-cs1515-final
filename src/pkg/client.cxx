@@ -57,13 +57,15 @@ Message_Message Client::send(std::string plaintext)
     // Lock will automatically release at the end of the function.
     std::lock_guard<std::mutex> lck{mtx};
 
-    // TODO: implement me!
-    throw std::runtime_error{"Client::send: NOT YET IMPLEMENTED"};
+//    throw std::runtime_error{"Client::send: NOT YET IMPLEMENTED"};
 
-//    if (DH_switched) {
-//        DH_switched = false;
-//        prepare_keys()
-//    }
+    // TODO: 1) Check if the DH Ratchet keys need to change; if so, update them.
+
+    // 2) Encrypt and tag the message.
+    crypto_driver->AES_encrypt(AES_key, std::move(plaintext));
+
+
+    return {};
 }
 
 /**
@@ -136,7 +138,7 @@ void Client::HandleKeyExchange(std::string command)
         network_driver->send(seParams);
 
     } else {
-        // throw ...
+        throw std::runtime_error{"Invalid command"};
     }
 
     // 2) Initialize DH object and keys
