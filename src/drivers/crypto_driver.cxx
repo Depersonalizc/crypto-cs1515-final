@@ -118,7 +118,7 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
     try {
         using namespace CryptoPP;
 
-        // TODO: implement me!
+        // TO.DO: implement me!
         CBC_Mode<AES>::Encryption enc;
 
         // Set key with IV
@@ -165,7 +165,7 @@ std::string CryptoDriver::AES_decrypt(SecByteBlock key, SecByteBlock iv,
     try {
         using namespace CryptoPP;
 
-        // TODO: implement me!
+        // TO.DO: implement me!
         CBC_Mode<AES>::Decryption dec;
         dec.SetKeyWithIV(key, key.size(), iv, iv.size());
 
@@ -199,7 +199,7 @@ SecByteBlock
 CryptoDriver::HMAC_generate_key(const SecByteBlock &DH_shared_key)
 {
     const auto hmacSalt = std::string{"salt0001"};
-    // TODO: implement me!
+    // TO.DO: implement me!
 
     auto hmacKey = SecByteBlock{AES::DEFAULT_KEYLENGTH};
 

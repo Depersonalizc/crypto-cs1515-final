@@ -157,14 +157,8 @@ void Client::HandleKeyExchange(std::string command)
     data_t seOtherPublic = network_driver->read();
     otherPublic.deserialize(seOtherPublic);
 
-    DH_last_other_public_value = otherPublic.public_value;
-
     // 5) Generate AES & HMAC keys
-    const auto dhShared =
-            crypto_driver->DH_generate_shared_key(dh, sk, DH_last_other_public_value);
-
-    AES_key = crypto_driver->AES_generate_key(dhShared);
-    HMAC_key = crypto_driver->HMAC_generate_key(dhShared);
+    prepare_keys(dh, sk, DH_last_other_public_value = otherPublic.public_value);
 }
 
 /**
