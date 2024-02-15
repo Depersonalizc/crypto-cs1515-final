@@ -224,8 +224,7 @@ std::string CryptoDriver::HMAC_generate(SecByteBlock key,
 
     try {
         // TODO: implement me!
-        HMAC<SHA256> hasher;
-        hasher.SetKey(key, key.size());
+        HMAC<SHA256> hasher{key, key.size()};
 
         std::string hmac;
         StringSource ss{ciphertext, true,
@@ -260,8 +259,7 @@ bool CryptoDriver::HMAC_verify(SecByteBlock key, std::string ciphertext,
     // TODO: implement me!
 //    throw std::runtime_error{"CryptoDriver::HMAC_verify: NOT YET IMPLEMENTED"};
 
-    HMAC<SHA256> hasher;
-    hasher.SetKey(key, key.size());
+    HMAC<SHA256> hasher{key, key.size()};
 
     bool ok;
     StringSource ss(ciphertext + mac, true,
