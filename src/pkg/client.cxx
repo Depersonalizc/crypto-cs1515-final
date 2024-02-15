@@ -144,14 +144,21 @@ void Client::HandleKeyExchange(std::string command)
     DH_current_private_value = sk;
     DH_current_public_value = pk;
 
+
     // 3) Send my public value (pk)
-    data_t seMyPublic(pk.size());
-    std::copy_n(pk.data(), pk.size(), seMyPublic.begin());
+    PublicValue_Message myPublic;
+    myPublic.public_value = pk;
+
+    data_t seMyPublic;
+    myPublic.serialize(seMyPublic);
     network_driver->send(seMyPublic);
 
     // 4) Listen for the other party's public value
-    const data_t seOtherPublic = network_driver->read();
-    DH_last_other_public_value = {seOtherPublic.data(), seOtherPublic.size()};
+    PublicValue_Message otherPublic;
+    data_t seOtherPublic = network_driver->read();
+    otherPublic.deserialize(seOtherPublic);
+
+    DH_last_other_public_value = otherPublic.public_value;
 
     // 5) Generate AES & HMAC keys
     const auto dhShared =
