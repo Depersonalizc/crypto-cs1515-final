@@ -62,10 +62,17 @@ Message_Message Client::send(std::string plaintext)
     // TODO: 1) Check if the DH Ratchet keys need to change; if so, update them.
 
     // 2) Encrypt and tag the message.
-    crypto_driver->AES_encrypt(AES_key, std::move(plaintext));
+    Message_Message msg;
 
+    auto [ciphertext, iv] = crypto_driver->AES_encrypt(AES_key, std::move(plaintext));
+    msg.ciphertext = std::move(ciphertext);
+    msg.public_value = DH_current_public_value;
+    msg.iv = iv;
 
-    return {};
+    msg.mac = crypto_driver->HMAC_generate(
+            HMAC_key, concat_msg_fields(msg.iv, msg.public_value, msg.ciphertext));
+
+    return msg;
 }
 
 /**
@@ -81,8 +88,17 @@ std::pair<std::string, bool> Client::receive(Message_Message msg)
     std::lock_guard<std::mutex> lck{mtx};
 
     // TODO: implement me!
-    throw std::runtime_error{"Client::receive: NOT YET IMPLEMENTED"};
+//    throw std::runtime_error{"Client::receive: NOT YET IMPLEMENTED"};
 
+    // TODO: 1) Check if the DH Ratchet keys need to change; if so, update them.
+
+    // 2) Decrypt and verify the message.
+    auto plaintext = crypto_driver->AES_decrypt(AES_key, msg.iv, msg.ciphertext);
+
+    auto ivPkCiphertext = concat_msg_fields(msg.iv, msg.public_value, std::move(msg.ciphertext));
+    auto ok = crypto_driver->HMAC_verify(HMAC_key, std::move(ivPkCiphertext), msg.mac);
+
+    return {std::move(plaintext), ok};
 }
 
 /**
