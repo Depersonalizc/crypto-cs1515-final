@@ -172,7 +172,7 @@ std::string CryptoDriver::AES_decrypt(SecByteBlock key, SecByteBlock iv,
         std::string plaintext;
         StringSource ss{ciphertext, true,
             new StreamTransformationFilter{dec,
-                new StringSink{plaintext}, CryptoPP::BlockPaddingSchemeDef::BlockPaddingScheme::ZEROS_PADDING
+                new StringSink{plaintext}
             } // StreamTransformationFilter
         }; // StringSource
 
