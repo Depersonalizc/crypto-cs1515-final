@@ -94,9 +94,8 @@ std::pair<std::string, bool> Client::receive(Message_Message msg)
 
     // 2) Decrypt and verify the message.
     auto plaintext = crypto_driver->AES_decrypt(AES_key, msg.iv, msg.ciphertext);
-
-    auto ivPkCiphertext = concat_msg_fields(msg.iv, msg.public_value, std::move(msg.ciphertext));
-    auto ok = crypto_driver->HMAC_verify(HMAC_key, std::move(ivPkCiphertext), msg.mac);
+    auto ok = crypto_driver->HMAC_verify(
+        HMAC_key, concat_msg_fields(msg.iv, msg.public_value, std::move(msg.ciphertext)), msg.mac);
 
     return {std::move(plaintext), ok};
 }
