@@ -186,97 +186,6 @@ std::string CryptoDriver::AES_decrypt(SecByteBlock key, SecByteBlock iv,
     }
 }
 
-///**
-// * @brief Generates an HMAC key using HKDF with a salt. This function should
-// * 1) Allocate a `SecByteBlock` of size `SHA256::BLOCKSIZE` for the shared key.
-// * 2) Use an `HKDF<SHA256>` to derive and return a key for HMAC using the
-// * provided salt. See the `DeriveKey` function.
-// * 3) Important tip: use .size() on a SecByteBlock instead of sizeof()
-// * @param DH_shared_key shared key from Diffie-Hellman
-// * @return HMAC key
-// */
-//SecByteBlock
-//CryptoDriver::HMAC_generate_key(const SecByteBlock &DH_shared_key)
-//{
-//    const auto hmacSalt = std::string{"salt0001"};
-//    // TO.DO: implement me!
-//
-//    auto hmacKey = SecByteBlock{AES::DEFAULT_KEYLENGTH};
-//
-//    HKDF<SHA256>{}.DeriveKey(hmacKey, hmacKey.size(),
-//                             DH_shared_key, DH_shared_key.size(),
-//                             reinterpret_cast<const byte *>(hmacSalt.data()), hmacSalt.size(), nullptr, 0);
-//
-//    return hmacKey;
-//}
-//
-///**
-// * @brief Given a ciphertext, generates an HMAC. This function should
-// * 1) Initialize an HMAC<SHA256> with the provided key.
-// * 2) Run the ciphertext through a `HashFilter` to generate an HMAC.
-// * 3) Throw `std::runtime_error` upon failure.
-// * @param key HMAC key
-// * @param ciphertext message to tag
-// * @return HMAC (Hashed Message Authentication Code)
-// */
-////    throw std::runtime_error{"CryptoDriver::HMAC_generate: NOT YET IMPLEMENTED"};
-////    std::cerr << "[INFO] HMAC_generate::ciphertext length: " << ciphertext.size() << std::endl;
-//
-//std::string CryptoDriver::HMAC_generate(SecByteBlock key,
-//                                        std::string ciphertext)
-//{
-//    try {
-//        // TODO: implement me!
-//        HMAC<SHA256> hasher{key, key.size()};
-//
-//        std::string hmac;
-//        StringSource ss{ciphertext, true,
-//            new HashFilter{hasher,
-//                new StringSink{hmac}
-//            } // HashFilter
-//        }; // StringSource
-//
-//        return hmac;
-//
-//    } catch (const CryptoPP::Exception &e) {
-//        std::cerr << e.what() << std::endl;
-//        throw std::runtime_error("CryptoDriver HMAC generation failed.");
-//    }
-//}
-//
-///**
-// * @brief Given a message and MAC, checks if the MAC is valid. This function
-// * should 1) Initialize an `HMAC<SHA256>` with the provided key. 2) Run the
-// * message through a `HashVerificationFilter` to verify the HMAC. 3) Return
-// * false upon failure.
-// * @param key HMAC key
-// * @param ciphertext message to verify
-// * @param mac associated MAC
-// * @return true if MAC is valid, else false
-// */
-//bool CryptoDriver::HMAC_verify(SecByteBlock key, std::string ciphertext,
-//                               std::string mac)
-//{
-////    static constexpr auto flags =
-////            HashVerificationFilter::PUT_RESULT | HashVerificationFilter::HASH_AT_END;
-//    std::cerr << "[INFO] HMAC_verify::ciphertext length: " << ciphertext.size() << std::endl;
-//
-//    // TODO: implement me!
-////    throw std::runtime_error{"CryptoDriver::HMAC_verify: NOT YET IMPLEMENTED"};
-//
-//    HMAC<SHA256> hasher{key, key.size()};
-//
-//    bool ok = false;
-//    StringSource ss{ciphertext += mac, true,
-//        new HashVerificationFilter{hasher,
-//           new ArraySink{reinterpret_cast<byte *>(&ok), sizeof(ok)},
-//           HashVerificationFilter::PUT_RESULT | HashVerificationFilter::HASH_AT_END
-//        } // HashVerificationFilter
-//    }; // StringSource
-//
-//    return ok;
-//}
-
 /**
  * @brief Generates an HMAC key using HKDF with a salt. This function should
  * 1) Allocate a `SecByteBlock` of size `SHA256::BLOCKSIZE` for the shared key.
@@ -287,18 +196,18 @@ std::string CryptoDriver::AES_decrypt(SecByteBlock key, SecByteBlock iv,
  * @return HMAC key
  */
 SecByteBlock
-CryptoDriver::HMAC_generate_key(const SecByteBlock &DH_shared_key) {
-    std::string hmac_salt_str("salt0001");
-    SecByteBlock hmac_salt((const unsigned char *)(hmac_salt_str.data()),
-                           hmac_salt_str.size());
-    // TODO: implement me!
-    SecByteBlock hmac_key = SecByteBlock(SHA256::BLOCKSIZE);
-    HKDF<SHA256> hkdf;
-    hkdf.DeriveKey(hmac_key, hmac_key.size(),
-                   DH_shared_key, DH_shared_key.size(),
-                   hmac_salt, hmac_salt.size(),
-                   NULL, 0);
-    return hmac_key;
+CryptoDriver::HMAC_generate_key(const SecByteBlock &DH_shared_key)
+{
+    const auto hmacSalt = std::string{"salt0001"};
+    // TO.DO: implement me!
+
+    auto hmacKey = SecByteBlock{AES::DEFAULT_KEYLENGTH};
+
+    HKDF<SHA256>{}.DeriveKey(hmacKey, hmacKey.size(),
+                             DH_shared_key, DH_shared_key.size(),
+                             reinterpret_cast<const byte *>(hmacSalt.data()), hmacSalt.size(), nullptr, 0);
+
+    return hmacKey;
 }
 
 /**
@@ -311,13 +220,23 @@ CryptoDriver::HMAC_generate_key(const SecByteBlock &DH_shared_key) {
  * @return HMAC (Hashed Message Authentication Code)
  */
 std::string CryptoDriver::HMAC_generate(SecByteBlock key,
-                                        std::string ciphertext) {
+                                        std::string ciphertext)
+{
+//    throw std::runtime_error{"CryptoDriver::HMAC_generate: NOT YET IMPLEMENTED"};
+    std::cerr << "[INFO] HMAC_generate::ciphertext length: " << ciphertext.size() << std::endl;
+
     try {
         // TODO: implement me!
-        HMAC<SHA256> hmac(key, key.size());
-        std::string hashed_c;
-        StringSource ss(ciphertext, true, new HashFilter(hmac, new StringSink(hashed_c)));
-        return hashed_c;
+        HMAC<SHA256> hasher{key, key.size()};
+
+        std::string hmac;
+        StringSource ss{ciphertext, true,
+            new HashFilter{hasher,
+                new StringSink{hmac}} // StreamTransformationFilter
+        }; // StringSource
+
+        return hmac;
+
     } catch (const CryptoPP::Exception &e) {
         std::cerr << e.what() << std::endl;
         throw std::runtime_error("CryptoDriver HMAC generation failed.");
@@ -337,15 +256,22 @@ std::string CryptoDriver::HMAC_generate(SecByteBlock key,
 bool CryptoDriver::HMAC_verify(SecByteBlock key, std::string ciphertext,
                                std::string mac)
 {
-    const int flags = HashVerificationFilter::THROW_EXCEPTION |
-                      HashVerificationFilter::HASH_AT_END;
+//    static constexpr auto flags =
+//            HashVerificationFilter::PUT_RESULT | HashVerificationFilter::HASH_AT_END;
+    std::cerr << "[INFO] HMAC_verify::ciphertext length: " << ciphertext.size() << std::endl;
+
     // TODO: implement me!
-    HMAC<SHA256> hmac(key, key.size());
-    try {
-        StringSource ss(ciphertext + mac, true, new HashVerificationFilter(hmac, NULL, flags));
-        return true;
-    } catch (const CryptoPP::Exception &e) {
-        std::cout << e.what() << std::endl;
-        return false;
-    }
+//    throw std::runtime_error{"CryptoDriver::HMAC_verify: NOT YET IMPLEMENTED"};
+
+    HMAC<SHA256> hasher{key, key.size()};
+
+    bool ok = false;
+    StringSource ss{ciphertext += mac, true,
+        new HashVerificationFilter{hasher,
+           new ArraySink{reinterpret_cast<byte *>(&ok), sizeof(ok)},
+           HashVerificationFilter::PUT_RESULT | HashVerificationFilter::HASH_AT_END
+        } // HashVerificationFilter
+    }; // StringSource
+
+    return ok;
 }
