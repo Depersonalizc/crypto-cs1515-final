@@ -210,40 +210,40 @@ std::string CryptoDriver::AES_decrypt(SecByteBlock key, SecByteBlock iv,
 //    return hmacKey;
 //}
 //
-///**
-// * @brief Given a ciphertext, generates an HMAC. This function should
-// * 1) Initialize an HMAC<SHA256> with the provided key.
-// * 2) Run the ciphertext through a `HashFilter` to generate an HMAC.
-// * 3) Throw `std::runtime_error` upon failure.
-// * @param key HMAC key
-// * @param ciphertext message to tag
-// * @return HMAC (Hashed Message Authentication Code)
-// */
-////    throw std::runtime_error{"CryptoDriver::HMAC_generate: NOT YET IMPLEMENTED"};
-////    std::cerr << "[INFO] HMAC_generate::ciphertext length: " << ciphertext.size() << std::endl;
-//
-//std::string CryptoDriver::HMAC_generate(SecByteBlock key,
-//                                        std::string ciphertext)
-//{
-//    try {
-//        // TODO: implement me!
-//        HMAC<SHA256> hasher{key, key.size()};
-//
-//        std::string hmac;
-//        StringSource ss{ciphertext, true,
-//            new HashFilter{hasher,
-//                new StringSink{hmac}
-//            } // HashFilter
-//        }; // StringSource
-//
-//        return hmac;
-//
-//    } catch (const CryptoPP::Exception &e) {
-//        std::cerr << e.what() << std::endl;
-//        throw std::runtime_error("CryptoDriver HMAC generation failed.");
-//    }
-//}
-//
+/**
+ * @brief Given a ciphertext, generates an HMAC. This function should
+ * 1) Initialize an HMAC<SHA256> with the provided key.
+ * 2) Run the ciphertext through a `HashFilter` to generate an HMAC.
+ * 3) Throw `std::runtime_error` upon failure.
+ * @param key HMAC key
+ * @param ciphertext message to tag
+ * @return HMAC (Hashed Message Authentication Code)
+ */
+//    throw std::runtime_error{"CryptoDriver::HMAC_generate: NOT YET IMPLEMENTED"};
+//    std::cerr << "[INFO] HMAC_generate::ciphertext length: " << ciphertext.size() << std::endl;
+
+std::string CryptoDriver::HMAC_generate(SecByteBlock key,
+                                        std::string ciphertext)
+{
+    try {
+        // TODO: implement me!
+        HMAC<SHA256> hasher{key, key.size()};
+
+        std::string hmac;
+        StringSource ss{ciphertext, true,
+            new HashFilter{hasher,
+                new StringSink{hmac}
+            } // HashFilter
+        }; // StringSource
+
+        return hmac;
+
+    } catch (const CryptoPP::Exception &e) {
+        std::cerr << e.what() << std::endl;
+        throw std::runtime_error("CryptoDriver HMAC generation failed.");
+    }
+}
+
 ///**
 // * @brief Given a message and MAC, checks if the MAC is valid. This function
 // * should 1) Initialize an `HMAC<SHA256>` with the provided key. 2) Run the
@@ -301,28 +301,28 @@ CryptoDriver::HMAC_generate_key(const SecByteBlock &DH_shared_key) {
     return hmac_key;
 }
 
-/**
- * @brief Given a ciphertext, generates an HMAC. This function should
- * 1) Initialize an HMAC<SHA256> with the provided key.
- * 2) Run the ciphertext through a `HashFilter` to generate an HMAC.
- * 3) Throw `std::runtime_error` upon failure.
- * @param key HMAC key
- * @param ciphertext message to tag
- * @return HMAC (Hashed Message Authentication Code)
- */
-std::string CryptoDriver::HMAC_generate(SecByteBlock key,
-                                        std::string ciphertext) {
-    try {
-        // TODO: implement me!
-        HMAC<SHA256> hmac(key, key.size());
-        std::string hashed_c;
-        StringSource ss(ciphertext, true, new HashFilter(hmac, new StringSink(hashed_c)));
-        return hashed_c;
-    } catch (const CryptoPP::Exception &e) {
-        std::cerr << e.what() << std::endl;
-        throw std::runtime_error("CryptoDriver HMAC generation failed.");
-    }
-}
+///**
+// * @brief Given a ciphertext, generates an HMAC. This function should
+// * 1) Initialize an HMAC<SHA256> with the provided key.
+// * 2) Run the ciphertext through a `HashFilter` to generate an HMAC.
+// * 3) Throw `std::runtime_error` upon failure.
+// * @param key HMAC key
+// * @param ciphertext message to tag
+// * @return HMAC (Hashed Message Authentication Code)
+// */
+//std::string CryptoDriver::HMAC_generate(SecByteBlock key,
+//                                        std::string ciphertext) {
+//    try {
+//        // TODO: implement me!
+//        HMAC<SHA256> hmac(key, key.size());
+//        std::string hashed_c;
+//        StringSource ss(ciphertext, true, new HashFilter(hmac, new StringSink(hashed_c)));
+//        return hashed_c;
+//    } catch (const CryptoPP::Exception &e) {
+//        std::cerr << e.what() << std::endl;
+//        throw std::runtime_error("CryptoDriver HMAC generation failed.");
+//    }
+//}
 
 /**
  * @brief Given a message and MAC, checks if the MAC is valid. This function
