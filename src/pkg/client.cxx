@@ -160,6 +160,7 @@ void Client::HandleKeyExchange(std::string command)
     const auto &[dh, sk, pk] = crypto_driver->DH_initialize(DH_params);
     DH_current_private_value = sk;
     DH_current_public_value = pk;
+    std::cerr << "[INFO] Client::HandleKeyExchange: DH_current_public_value length = " << DH_current_public_value.size() << std::endl;
 
     // 3) Send my public value (pk)
     PublicValue_Message myPublic;

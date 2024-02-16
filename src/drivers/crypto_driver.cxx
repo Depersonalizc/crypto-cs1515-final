@@ -134,8 +134,8 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
             } // StreamTransformationFilter
         }; // StringSource
 
-        std::cerr << "[INFO] Ciphertext length: " << ciphertext.size() << std::endl;
-        std::cerr << "[INFO] IV length: " << iv.size() << std::endl;
+        std::cerr << "[INFO] AES_encrypt: Ciphertext length: " << ciphertext.size() << std::endl;
+        std::cerr << "[INFO] AES_encrypt: IV length: " << iv.size() << std::endl;
         return {std::move(ciphertext), std::move(iv)};
 
     } catch (const CryptoPP::Exception &e) {
