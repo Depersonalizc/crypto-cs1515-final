@@ -130,7 +130,7 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
         std::string ciphertext;
         StringSource ss{plaintext, true,
             new StreamTransformationFilter{enc,
-               new StringSink{ciphertext}
+               new StringSink{ciphertext}, BlockPaddingSchemeDef::BlockPaddingScheme::ZEROS_PADDING
             } // StreamTransformationFilter
         }; // StringSource
 
@@ -172,7 +172,7 @@ std::string CryptoDriver::AES_decrypt(SecByteBlock key, SecByteBlock iv,
         std::string plaintext;
         StringSource ss{ciphertext, true,
             new StreamTransformationFilter{dec,
-                new StringSink{plaintext}
+                new StringSink{plaintext}, CryptoPP::BlockPaddingSchemeDef::BlockPaddingScheme::ZEROS_PADDING
             } // StreamTransformationFilter
         }; // StringSource
 
@@ -265,7 +265,7 @@ bool CryptoDriver::HMAC_verify(SecByteBlock key, std::string ciphertext,
 
     HMAC<SHA256> hasher{key, key.size()};
 
-    bool ok = false;
+    bool ok;
     StringSource ss{ciphertext += mac, true,
         new HashVerificationFilter{hasher,
            new ArraySink{reinterpret_cast<byte *>(&ok), sizeof(ok)},
