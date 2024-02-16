@@ -60,6 +60,16 @@ Message_Message Client::send(std::string plaintext)
 //    throw std::runtime_error{"Client::send: NOT YET IMPLEMENTED"};
 
     // TODO: 1) Check if the DH Ratchet keys need to change; if so, update them.
+    if (DH_switched) {
+        // Re-initialize DH object and keys
+        const auto &[dh, sk, pk] = crypto_driver->DH_initialize(DH_params);
+        DH_current_private_value = sk;
+        DH_current_public_value = pk;
+
+        prepare_keys(dh, DH_current_private_value, DH_last_other_public_value);
+
+        DH_switched = false;
+    }
 
     // 2) Encrypt and tag the message.
     Message_Message msg;
@@ -87,8 +97,15 @@ std::pair<std::string, bool> Client::receive(Message_Message msg)
     // Lock will automatically release at the end of the function.
     std::lock_guard<std::mutex> lck{mtx};
 
+    DH_switched = true;
+
     // TODO: implement me!
 //    throw std::runtime_error{"Client::receive: NOT YET IMPLEMENTED"};
+    if (msg.public_value != DH_last_other_public_value) {
+        prepare_keys({DH_params.p, DH_params.q, DH_params.g},
+                     DH_current_private_value,
+                     DH_last_other_public_value = msg.public_value);
+    }
 
     // TODO: 1) Check if the DH Ratchet keys need to change; if so, update them.
 
