@@ -130,7 +130,7 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
         std::string ciphertext;
         StringSource ss{plaintext, true,
             new StreamTransformationFilter{enc,
-               new StringSink{ciphertext}, BlockPaddingSchemeDef::BlockPaddingScheme::ZEROS_PADDING
+               new StringSink{ciphertext}
             } // StreamTransformationFilter
         }; // StringSource
 
