@@ -266,12 +266,12 @@ bool CryptoDriver::HMAC_verify(SecByteBlock key, std::string ciphertext,
     HMAC<SHA256> hasher{key, key.size()};
 
     bool ok = false;
-//    StringSource ss{ciphertext += mac, true,
-//        new HashVerificationFilter{hasher,
-//           new ArraySink{reinterpret_cast<byte *>(&ok), sizeof(ok)},
-//           HashVerificationFilter::PUT_RESULT | HashVerificationFilter::HASH_AT_END
-//        } // HashVerificationFilter
-//    }; // StringSource
+    StringSource ss{ciphertext += mac, true,
+        new HashVerificationFilter{hasher,
+           new ArraySink{reinterpret_cast<byte *>(&ok), sizeof(ok)},
+           HashVerificationFilter::PUT_RESULT | HashVerificationFilter::HASH_AT_END
+        } // HashVerificationFilter
+    }; // StringSource
 
     return ok;
 }
