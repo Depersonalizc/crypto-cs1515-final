@@ -57,15 +57,12 @@ Message_Message Client::send(std::string plaintext)
     // Lock will automatically release at the end of the function.
     std::lock_guard<std::mutex> lck{mtx};
 
-//    throw std::runtime_error{"Client::send: NOT YET IMPLEMENTED"};
-
-    // TODO: 1) Check if the DH Ratchet keys need to change; if so, update them.
+    // 1) Check if the DH Ratchet keys need to change; if so, update them.
     if (DH_switched) {
         // Re-initialize DH object and keys
         const auto &[dh, sk, pk] = crypto_driver->DH_initialize(DH_params);
         DH_current_private_value = sk;
         DH_current_public_value = pk;
-
         prepare_keys(dh, DH_current_private_value, DH_last_other_public_value);
 
         DH_switched = false;
@@ -99,20 +96,17 @@ std::pair<std::string, bool> Client::receive(Message_Message msg)
 
     DH_switched = true;
 
-    // TODO: implement me!
-//    throw std::runtime_error{"Client::receive: NOT YET IMPLEMENTED"};
+    // 1) Check if the DH Ratchet keys need to change; if so, update them.
     if (msg.public_value != DH_last_other_public_value) {
         prepare_keys({DH_params.p, DH_params.q, DH_params.g},
                      DH_current_private_value,
                      DH_last_other_public_value = msg.public_value);
     }
 
-    // TODO: 1) Check if the DH Ratchet keys need to change; if so, update them.
-
     // 2) Decrypt and verify the message.
     auto plaintext = crypto_driver->AES_decrypt(AES_key, msg.iv, msg.ciphertext);
     auto ok = crypto_driver->HMAC_verify(
-        HMAC_key, concat_msg_fields(msg.iv, msg.public_value, std::move(msg.ciphertext)), msg.mac);
+            HMAC_key, concat_msg_fields(msg.iv, msg.public_value, std::move(msg.ciphertext)), msg.mac);
 
     return {std::move(plaintext), ok};
 }
@@ -148,9 +142,6 @@ void Client::run(std::string command)
  */
 void Client::HandleKeyExchange(std::string command)
 {
-    // TODO: implement me!
-//    throw std::runtime_error{"Client::HandleKeyExchange: NOT YET IMPLEMENTED"};
-
     using data_t = std::vector<unsigned char>;
 
     if (command == "listen") {
@@ -177,7 +168,6 @@ void Client::HandleKeyExchange(std::string command)
     const auto &[dh, sk, pk] = crypto_driver->DH_initialize(DH_params);
     DH_current_private_value = sk;
     DH_current_public_value = pk;
-    std::cerr << "[INFO] Client::HandleKeyExchange: DH_current_public_value length = " << DH_current_public_value.size() << std::endl;
 
     // 3) Send my public value (pk)
     PublicValue_Message myPublic;

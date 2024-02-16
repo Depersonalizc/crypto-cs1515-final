@@ -19,7 +19,6 @@ static auto rngp = AutoSeededRandomPool{};
  */
 DHParams_Message CryptoDriver::DH_generate_params()
 {
-    // TO.DO: implement me!
     using namespace CryptoPP;
 
     const auto primeGen = PrimeAndGenerator{1, rngp, 512, 511};
@@ -43,7 +42,6 @@ DHParams_Message CryptoDriver::DH_generate_params()
 std::tuple<DH, SecByteBlock, SecByteBlock>
 CryptoDriver::DH_initialize(const DHParams_Message &DH_params)
 {
-    // TO.DO: implement me!
     auto dh = DH{DH_params.p, DH_params.q, DH_params.g};
     auto sk = SecByteBlock{dh.PrivateKeyLength()};
     auto pk = SecByteBlock{dh.PublicKeyLength()};
@@ -67,7 +65,6 @@ SecByteBlock CryptoDriver::DH_generate_shared_key(
         const DH &DH_obj, const SecByteBlock &DH_private_value,
         const SecByteBlock &DH_other_public_value)
 {
-    // TO.DO: implement me!
     auto shared = SecByteBlock{DH_obj.AgreedValueLength()};
     if (!DH_obj.Agree(shared, DH_private_value, DH_other_public_value)) {
         throw std::runtime_error{"Failed to agree on other party's public key"};
@@ -87,15 +84,13 @@ SecByteBlock CryptoDriver::DH_generate_shared_key(
  */
 SecByteBlock CryptoDriver::AES_generate_key(const SecByteBlock &DH_shared_key)
 {
-    const auto aesSalt = std::string{"salt0000"};
+    static constexpr auto aesSalt = std::string_view{"salt0000"};
 
-    // TO.DO: implement me!
     auto aesKey = SecByteBlock{AES::DEFAULT_KEYLENGTH};
-
     HKDF<SHA256>{}.DeriveKey(aesKey, aesKey.size(),
                              DH_shared_key, DH_shared_key.size(),
-                             reinterpret_cast<const byte *>(aesSalt.data()), aesSalt.size(), nullptr, 0);
-
+                             reinterpret_cast<const byte *>(aesSalt.data()), aesSalt.size(),
+                             nullptr, 0);
     return aesKey;
 }
 
@@ -118,7 +113,6 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
     try {
         using namespace CryptoPP;
 
-        // TO.DO: implement me!
         CBC_Mode<AES>::Encryption enc;
 
         // Set key with IV
@@ -130,12 +124,10 @@ CryptoDriver::AES_encrypt(SecByteBlock key, std::string plaintext)
         std::string ciphertext;
         StringSource ss{plaintext, true,
             new StreamTransformationFilter{enc,
-               new StringSink{ciphertext}
+                new StringSink{ciphertext}
             } // StreamTransformationFilter
         }; // StringSource
 
-        std::cerr << "[INFO] AES_encrypt: Ciphertext length: " << ciphertext.size() << std::endl;
-        std::cerr << "[INFO] AES_encrypt: IV length: " << iv.size() << std::endl;
         return {std::move(ciphertext), std::move(iv)};
 
     } catch (const CryptoPP::Exception &e) {
@@ -165,7 +157,6 @@ std::string CryptoDriver::AES_decrypt(SecByteBlock key, SecByteBlock iv,
     try {
         using namespace CryptoPP;
 
-        // TO.DO: implement me!
         CBC_Mode<AES>::Decryption dec;
         dec.SetKeyWithIV(key, key.size(), iv, iv.size());
 
@@ -198,15 +189,13 @@ std::string CryptoDriver::AES_decrypt(SecByteBlock key, SecByteBlock iv,
 SecByteBlock
 CryptoDriver::HMAC_generate_key(const SecByteBlock &DH_shared_key)
 {
-    const auto hmacSalt = std::string{"salt0001"};
-    // TO.DO: implement me!
+    static constexpr auto hmacSalt = std::string_view{"salt0001"};
 
     auto hmacKey = SecByteBlock{SHA256::BLOCKSIZE};
-
     HKDF<SHA256>{}.DeriveKey(hmacKey, hmacKey.size(),
                              DH_shared_key, DH_shared_key.size(),
-                             reinterpret_cast<const byte *>(hmacSalt.data()), hmacSalt.size(), nullptr, 0);
-
+                             reinterpret_cast<const byte *>(hmacSalt.data()), hmacSalt.size(),
+                             nullptr, 0);
     return hmacKey;
 }
 
@@ -222,17 +211,14 @@ CryptoDriver::HMAC_generate_key(const SecByteBlock &DH_shared_key)
 std::string CryptoDriver::HMAC_generate(SecByteBlock key,
                                         std::string ciphertext)
 {
-//    throw std::runtime_error{"CryptoDriver::HMAC_generate: NOT YET IMPLEMENTED"};
-    std::cerr << "[INFO] HMAC_generate::ciphertext length: " << ciphertext.size() << std::endl;
-
     try {
-        // TO.DO: implement me!
         HMAC<SHA256> hasher{key, key.size()};
 
         std::string hmac;
         StringSource ss{ciphertext, true,
             new HashFilter{hasher,
-                new StringSink{hmac}} // StreamTransformationFilter
+                new StringSink{hmac}
+            } // StreamTransformationFilter
         }; // StringSource
 
         return hmac;
@@ -256,13 +242,6 @@ std::string CryptoDriver::HMAC_generate(SecByteBlock key,
 bool CryptoDriver::HMAC_verify(SecByteBlock key, std::string ciphertext,
                                std::string mac)
 {
-//    static constexpr auto flags =
-//            HashVerificationFilter::PUT_RESULT | HashVerificationFilter::HASH_AT_END;
-    std::cerr << "[INFO] HMAC_verify::ciphertext length: " << ciphertext.size() << std::endl;
-
-    // TO.DO: implement me!
-//    throw std::runtime_error{"CryptoDriver::HMAC_verify: NOT YET IMPLEMENTED"};
-
     HMAC<SHA256> hasher{key, key.size()};
 
     bool ok;
