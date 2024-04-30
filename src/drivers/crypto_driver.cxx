@@ -79,16 +79,16 @@ SecByteBlock CryptoDriver::DH_generate_shared_key(
  * provided salt. See the `DeriveKey` function. (Use NULL for the "info"
  * argument and 0 for "infolen".)
  * 3) Important tip: use .size() on a SecByteBlock instead of sizeof()
- * @param DH_shared_key Diffie-Hellman shared key
+ * @param sharedKey Secret shared key
  * @return AES key
  */
-SecByteBlock CryptoDriver::AES_generate_key(const SecByteBlock &DH_shared_key)
+SecByteBlock CryptoDriver::AES_generate_key(const SecByteBlock &sharedKey)
 {
     static constexpr auto aesSalt = std::string_view{"salt0000"};
 
     auto aesKey = SecByteBlock{AES::DEFAULT_KEYLENGTH};
     HKDF<SHA256>{}.DeriveKey(aesKey, aesKey.size(),
-                             DH_shared_key, DH_shared_key.size(),
+                             sharedKey, sharedKey.size(),
                              reinterpret_cast<const byte *>(aesSalt.data()), aesSalt.size(),
                              nullptr, 0);
     return aesKey;
@@ -183,17 +183,17 @@ std::string CryptoDriver::AES_decrypt(SecByteBlock key, SecByteBlock iv,
  * 2) Use an `HKDF<SHA256>` to derive and return a key for HMAC using the
  * provided salt. See the `DeriveKey` function.
  * 3) Important tip: use .size() on a SecByteBlock instead of sizeof()
- * @param DH_shared_key shared key from Diffie-Hellman
+ * @param sharedKey Secret shared key
  * @return HMAC key
  */
 SecByteBlock
-CryptoDriver::HMAC_generate_key(const SecByteBlock &DH_shared_key)
+CryptoDriver::HMAC_generate_key(const SecByteBlock &sharedKey)
 {
     static constexpr auto hmacSalt = std::string_view{"salt0001"};
 
     auto hmacKey = SecByteBlock{SHA256::BLOCKSIZE};
     HKDF<SHA256>{}.DeriveKey(hmacKey, hmacKey.size(),
-                             DH_shared_key, DH_shared_key.size(),
+                             sharedKey, sharedKey.size(),
                              reinterpret_cast<const byte *>(hmacSalt.data()), hmacSalt.size(),
                              nullptr, 0);
     return hmacKey;

@@ -6,8 +6,8 @@
 #include <stdexcept>
 #include <vector>
 
-#include <crypto++/cryptlib.h>
-#include <crypto++/integer.h>
+#include <cryptopp/cryptlib.h>
+#include <cryptopp/integer.h>
 
 // ================================================
 // MESSAGE TYPES

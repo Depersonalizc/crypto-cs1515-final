@@ -5,12 +5,12 @@
 
 #include <boost/chrono.hpp>
 #include <boost/thread.hpp>
-#include <crypto++/cryptlib.h>
-#include <crypto++/dh.h>
-#include <crypto++/dh2.h>
-#include <crypto++/integer.h>
-#include <crypto++/nbtheory.h>
-#include <crypto++/osrng.h>
+#include <cryptopp/cryptlib.h>
+#include <cryptopp/dh.h>
+#include <cryptopp/dh2.h>
+#include <cryptopp/integer.h>
+#include <cryptopp/nbtheory.h>
+#include <cryptopp/osrng.h>
 
 #include "../../include-shared/messages.hpp"
 #include "../../include/drivers/cli_driver.hpp"
@@ -22,9 +22,7 @@ public:
     Client(std::shared_ptr<NetworkDriver> network_driver,
            std::shared_ptr<CryptoDriver> crypto_driver);
 
-    void prepare_keys(CryptoPP::DH DH_obj,
-                      CryptoPP::SecByteBlock DH_private_value,
-                      CryptoPP::SecByteBlock DH_other_public_value);
+    void prepare_keys(CryptoPP::SecByteBlock sharedSecret);
 
     Message_Message send(std::string plaintext);
 

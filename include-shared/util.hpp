@@ -5,10 +5,10 @@
 #include <stdexcept>
 #include <vector>
 
-#include <crypto++/cryptlib.h>
-#include <crypto++/filters.h>
-#include <crypto++/hex.h>
-#include <crypto++/integer.h>
+#include <cryptopp/cryptlib.h>
+#include <cryptopp/filters.h>
+#include <cryptopp/hex.h>
+#include <cryptopp/integer.h>
 
 // String <=> Vec<char>.
 std::string chvec2str(std::vector<unsigned char> data);

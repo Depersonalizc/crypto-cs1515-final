@@ -33,8 +33,7 @@
 *.x
 
 # Build directory
-cmake-build-debug/
-cmake-build-release/
+cmake-build*/
 build/*
 debug-build/*
 !build/test.sh
