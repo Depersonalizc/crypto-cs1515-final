@@ -16,14 +16,22 @@ include(Doctest)
 include(Documentation)
 include(Warnings)
 include(Curses)
+include(SEAL)
+
+add_subdirectory(cryptopp-cmake)
 
 # add shared libraries
-set(SOURCES_SHARED src-shared/messages.cxx src-shared/logger.cxx src-shared/util.cxx)
+set(SOURCES_SHARED
+  src-shared/messages.cxx
+  src-shared/logger.cxx
+  src-shared/util.cxx)
 add_library(${LIBRARY_NAME_SHARED} ${SOURCES_SHARED})
 target_include_directories(${LIBRARY_NAME_SHARED} PUBLIC ${PROJECT_SOURCE_DIR}/include-shared)
+target_include_directories(${LIBRARY_NAME_SHARED} PUBLIC "/usr/local/include/SEAL-4.1")
 target_link_libraries(${LIBRARY_NAME_SHARED} PUBLIC doctest)
 target_link_libraries(${LIBRARY_NAME_SHARED} PRIVATE cryptopp)
 # target_link_libraries(${LIBRARY_NAME_SHARED} PRIVATE cryptopp-shared)
+target_link_libraries(${LIBRARY_NAME_SHARED} PRIVATE SEAL::seal)
 target_link_libraries(${LIBRARY_NAME_SHARED} PRIVATE ${Boost_LIBRARIES})
 target_link_libraries(${LIBRARY_NAME_SHARED} PRIVATE ${CURSES_LIBRARIES})
 
@@ -35,6 +43,7 @@ set(SOURCES
   src/drivers/cli_driver.cxx)
 add_library(${LIBRARY_NAME} ${SOURCES})
 target_include_directories(${LIBRARY_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include-shared ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(${LIBRARY_NAME} PUBLIC "/usr/local/include/SEAL-4.1")
 target_link_libraries(${LIBRARY_NAME} PRIVATE ${LIBRARY_NAME_SHARED})
 
 # add ta libraries
@@ -46,6 +55,7 @@ if ( "$ENV{CS1515_TA_MODE}" STREQUAL "on" )
     src-ta/drivers/cli_driver.cxx)
   add_library(${LIBRARY_NAME_TA} ${SOURCES_TA})
   target_include_directories(${LIBRARY_NAME_TA} PUBLIC ${PROJECT_SOURCE_DIR}/include-shared ${PROJECT_SOURCE_DIR}/include-ta)
+  target_include_directories(${LIBRARY_NAME_TA} PUBLIC "/usr/local/include/SEAL-4.1")
   target_link_libraries(${LIBRARY_NAME_TA} PRIVATE ${LIBRARY_NAME_SHARED})
 endif()
 
@@ -62,7 +72,7 @@ endif()
 set_target_properties(
   ${LIBRARY_NAME} ${LIBRARY_NAME_SHARED} ${EXEC_NAME}
     PROPERTIES
-      CXX_STANDARD 17
+      CXX_STANDARD 20
       CXX_STANDARD_REQUIRED YES
       CXX_EXTENSIONS NO
 )
@@ -72,7 +82,7 @@ if ( "$ENV{CS1515_TA_MODE}" STREQUAL "on" )
   set_target_properties(
     ${LIBRARY_NAME_TA}
         PROPERTIES
-          CXX_STANDARD 17
+          CXX_STANDARD 20
           CXX_STANDARD_REQUIRED YES
           CXX_EXTENSIONS NO
   )

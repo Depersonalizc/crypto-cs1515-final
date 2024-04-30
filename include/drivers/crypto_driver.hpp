@@ -6,19 +6,19 @@
 #include <string>
 #include <tuple>
 
-#include <crypto++/cryptlib.h>
-#include <crypto++/dh.h>
-#include <crypto++/dh2.h>
-#include <crypto++/files.h>
-#include <crypto++/hex.h>
-#include <crypto++/hkdf.h>
-#include <crypto++/hmac.h>
-#include <crypto++/integer.h>
-#include <crypto++/modes.h>
-#include <crypto++/nbtheory.h>
-#include <crypto++/osrng.h>
-#include <crypto++/rijndael.h>
-#include <crypto++/sha.h>
+#include <cryptopp/cryptlib.h>
+#include <cryptopp/dh.h>
+#include <cryptopp/dh2.h>
+#include <cryptopp/files.h>
+#include <cryptopp/hex.h>
+#include <cryptopp/hkdf.h>
+#include <cryptopp/hmac.h>
+#include <cryptopp/integer.h>
+#include <cryptopp/modes.h>
+#include <cryptopp/nbtheory.h>
+#include <cryptopp/osrng.h>
+#include <cryptopp/rijndael.h>
+#include <cryptopp/sha.h>
 
 #include "../../include-shared/messages.hpp"
 
@@ -35,7 +35,7 @@ public:
     DH_generate_shared_key(const DH &DH_obj, const SecByteBlock &DH_private_value,
                            const SecByteBlock &DH_other_public_value);
 
-    SecByteBlock AES_generate_key(const SecByteBlock &DH_shared_key);
+    SecByteBlock AES_generate_key(const SecByteBlock &sharedKey);
 
     std::pair<std::string, SecByteBlock> AES_encrypt(SecByteBlock key,
                                                      std::string plaintext);
@@ -43,7 +43,7 @@ public:
     std::string AES_decrypt(SecByteBlock key, SecByteBlock iv,
                             std::string ciphertext);
 
-    SecByteBlock HMAC_generate_key(const SecByteBlock &DH_shared_key);
+    SecByteBlock HMAC_generate_key(const SecByteBlock &sharedKey);
 
     std::string HMAC_generate(SecByteBlock key, std::string ciphertext);
 
